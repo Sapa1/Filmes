@@ -7,6 +7,6 @@ class MovieModel {
   final api = API();
 
   fetchMovie() {
-    movie = API().fetchMovie();
+    movie = api.fetchMovie();
   }
 }

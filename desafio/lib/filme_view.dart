@@ -32,7 +32,6 @@ class _FilmeViewState extends State<FilmeView> {
           ),
         ),
       ),
-      backgroundColor: Colors.black,
       body: FutureBuilder<List<Movie>>(
         future: controller.movie,
         builder: (context, snapshot) {
@@ -50,11 +49,19 @@ class _FilmeViewState extends State<FilmeView> {
                   child: Text('Erro ao carregar dados!'),
                 );
               } else {
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Image.network('https://image.tmdb.org/t/p/w300'+snapshot.data[index].poster_path);
-                  },
+                return Container(
+                  height: 500,
+                  color: Colors.pink,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return ComponentContainer(
+                        imagem: 'https://image.tmdb.org/t/p/w300' +
+                            snapshot.data[index].poster_path,
+                      );
+                    },
+                  ),
                 );
               }
           }
@@ -72,10 +79,16 @@ class ComponentContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
-      width: 300,
-      height: 300,
-      child: Image.network(imagem),
+      width: 250,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        image: DecorationImage(
+          image: NetworkImage(imagem),
+          fit: BoxFit.cover,
+
+        ),
+      ),
+      margin: EdgeInsets.all(10),
     );
   }
 }
