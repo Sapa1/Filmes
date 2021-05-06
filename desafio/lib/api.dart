@@ -16,7 +16,6 @@ class API {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       Iterable lista = json["results"];
-      print (lista);
       return lista.map((filme) => Movie.fromJson(filme)).toList();
     } else {
       throw Future.error('Movie not found');

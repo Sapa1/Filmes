@@ -59,6 +59,8 @@ class _FilmeViewState extends State<FilmeView> {
                       return ComponentContainer(
                         imagem: 'https://image.tmdb.org/t/p/w300' +
                             snapshot.data[index].poster_path,
+                        data: snapshot.data[index].release_date,
+                        nome: snapshot.data[index].nome,
                       );
                     },
                   ),
@@ -73,19 +75,28 @@ class _FilmeViewState extends State<FilmeView> {
 
 class ComponentContainer extends StatelessWidget {
   final String imagem;
+  final String nome;
+  final String data;
 
-  const ComponentContainer({Key key, this.imagem}) : super(key: key);
-
+  const ComponentContainer({Key key, this.imagem, this.nome, this.data})
+      : super(key: key);
+//stack no lugar da coluna e usar positioned pro nome e pra data
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 250,
+      child: Column(
+        children: [
+          Text(data),
+          Text(nome),
+        ],
+      ),
+      // alignment: Alignment.bottomCenter,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         image: DecorationImage(
           image: NetworkImage(imagem),
           fit: BoxFit.cover,
-
         ),
       ),
       margin: EdgeInsets.all(10),
