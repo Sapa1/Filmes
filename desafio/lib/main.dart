@@ -1,3 +1,4 @@
+import 'package:desafio/filme_controller.dart';
 import 'package:desafio/filme_view.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Desafio',
-      home: FilmeView(),  
+      theme: ThemeData(brightness: Brightness.dark),
+      home: FilmeView(),
     );
   }
 }

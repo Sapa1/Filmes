@@ -1,7 +1,12 @@
 import 'api.dart';
+import 'filme.dart';
 
-class MovieModel{
-  fechMovie(){
-API().fetchMovie();
+class MovieModel {
+  Future<List<Movie>> movie;
+
+  final api = API();
+
+  fetchMovie() {
+    movie = API().fetchMovie();
   }
 }

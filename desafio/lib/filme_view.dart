@@ -1,4 +1,6 @@
+import 'package:desafio/filme.dart';
 import 'package:flutter/material.dart';
+import 'package:desafio/filme_controller.dart';
 
 class FilmeView extends StatefulWidget {
   @override
@@ -6,6 +8,14 @@ class FilmeView extends StatefulWidget {
 }
 
 class _FilmeViewState extends State<FilmeView> {
+  final controller = MovieController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.loadMovie();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,43 +33,49 @@ class _FilmeViewState extends State<FilmeView> {
         ),
       ),
       backgroundColor: Colors.black,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: ListView(children: [
-          ComponentContainer(),
-          ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-          // ComponentContainer(),
-        ]),
+      body: FutureBuilder<List<Movie>>(
+        future: controller.movie,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+
+            default:
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Erro ao carregar dados!'),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return Image.network('https://image.tmdb.org/t/p/w300'+snapshot.data[index].poster_path);
+                  },
+                );
+              }
+          }
+        },
       ),
     );
   }
 }
 
 class ComponentContainer extends StatelessWidget {
+  final String imagem;
+
+  const ComponentContainer({Key key, this.imagem}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      width: 100,
+      color: Colors.red,
+      width: 300,
       height: 300,
-      margin: EdgeInsets.fromLTRB(100, 50, 100, 50),
+      child: Image.network(imagem),
     );
   }
 }
