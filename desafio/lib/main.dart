@@ -1,4 +1,3 @@
-import 'package:desafio/filme_controller.dart';
 import 'package:desafio/filme_view.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Desafio',
       theme: ThemeData(brightness: Brightness.dark),
       home: FilmeView(),
+      // home: DetailMovie(),
     );
   }
 }

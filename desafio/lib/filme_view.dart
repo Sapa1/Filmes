@@ -1,3 +1,4 @@
+import 'package:desafio/detail_movie.dart';
 import 'package:desafio/filme.dart';
 import 'package:flutter/material.dart';
 import 'package:desafio/filme_controller.dart';
@@ -8,12 +9,12 @@ class FilmeView extends StatefulWidget {
 }
 
 class _FilmeViewState extends State<FilmeView> {
-  final controller = MovieController();
+  final viewModel = HomeViewModel();
 
   @override
   void initState() {
     super.initState();
-    controller.loadMovie();
+    viewModel.loadMovie();
   }
 
   @override
@@ -23,17 +24,16 @@ class _FilmeViewState extends State<FilmeView> {
         centerTitle: true,
         title: Container(
           child: Text(
-            '    Lançamentos    ',
-            style: TextStyle(fontSize: 16),
+            '    Up comming    ',
+            style: TextStyle(fontSize: 20),
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.red,
           ),
         ),
       ),
-      body: FutureBuilder<List<Movie>>(
-        future: controller.movie,
+      body: StreamBuilder<List<Movie>>(
+        stream: viewModel.streamLista.stream,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -50,17 +50,32 @@ class _FilmeViewState extends State<FilmeView> {
                 );
               } else {
                 return Container(
-                  height: 500,
-                  color: Colors.pink,
                   child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      return ComponentContainer(
-                        imagem: 'https://image.tmdb.org/t/p/w300' +
-                            snapshot.data[index].poster_path,
-                        data: snapshot.data[index].release_date,
-                        nome: snapshot.data[index].nome,
+                      if (index == snapshot.data.length - 2) {
+                        viewModel.newPage();
+                      }
+                      var movie = snapshot.data[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailMovie(
+                                secondDescription: movie,
+                              ),
+                            ),
+                          );
+                        },
+                        child: ComponentContainer(
+                          imagem: movie.poster_path != null
+                              ? 'https://image.tmdb.org/t/p/w300' +
+                                  movie.poster_path
+                              : 'https://thumbs.dreamstime.com/b/erro-ou-%C3%ADcone-n%C3%A3o-encontrado-no-fundo-cinzento-108178373.jpg',
+                          data: movie.release_date,
+                          nome: movie.nome,
+                        ),
                       );
                     },
                   ),
@@ -80,26 +95,46 @@ class ComponentContainer extends StatelessWidget {
 
   const ComponentContainer({Key key, this.imagem, this.nome, this.data})
       : super(key: key);
-//stack no lugar da coluna e usar positioned pro nome e pra data
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      child: Column(
-        children: [
-          Text(data),
-          Text(nome),
-        ],
-      ),
-      // alignment: Alignment.bottomCenter,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: NetworkImage(imagem),
-          fit: BoxFit.cover,
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(
+              image: NetworkImage(imagem),
+              fit: BoxFit.cover,
+            ),
+          ),
+          alignment: Alignment.bottomCenter,
+          margin: EdgeInsets.all(10),
         ),
-      ),
-      margin: EdgeInsets.all(10),
+        Positioned(
+          right: 50,
+          top: 20,
+          child: Card(
+            color: Colors.black,
+            child: Text(
+              data,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 25,
+          child: Card(
+            color: Colors.black,
+            child: Text(
+              nome,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
